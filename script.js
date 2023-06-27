@@ -61,7 +61,7 @@ function timerBlink() {
 // FUNCTION startCountdown
 // -----------------------------------------------------
 function startCountdown() {
-  countdownInterval = setInterval(countdown, 1);
+  countdownInterval = setInterval(countdown, 1000);
 }
 // Object eventHandler
 
