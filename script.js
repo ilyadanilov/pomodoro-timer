@@ -1,54 +1,94 @@
 // Пользовательские значения
-const userDefinedPomodoroLength = null;
+const userDefinedPomoLength = null;
 const userDefinedShortBreak = null;
 const userDefinedLongBreak = null;
-const userDefinedPomodorosTillLongBreak = null;
+const userDefinedPomosTillLongBreak = null;
 // Дефолтные значения и селекторы
 const startBtn = document.querySelector(".pomodoro__start-btn");
 const timer = document.querySelector(".pomodoro__timer");
 const resetBtn = document.querySelector(".pomodoro__reset-btn");
-const defaultPomodoroLength = userDefinedPomodoroLength || 25;
+const dailyPomoCounterDisplay = document.querySelector(".daily-pomodoro-counter");
+const totalPomoCounterDisplay = document.querySelector('.total-pomodoro-counter');
+const defaultPomoLength = userDefinedPomoLength || 25;
 const shortBreak = userDefinedShortBreak || 5;
 const longBreak = userDefinedLongBreak || 15;
-const pomodorosTillLongBreak = userDefinedPomodorosTillLongBreak || 4;
+const pomosTillLongBreak = userDefinedPomosTillLongBreak || 4;
 let countdownInterval = null;
 let blinkInterval = null;
-let remainingTime = defaultPomodoroLength * 60;
+let remainingTime = defaultPomoLength * 60;
 let isStarted = false;
 let isBreak = false;
-let pomodoroCounter = 0;
+updatePomoCountersDisplay();
+
+
+function setPomoDailyCounter(pomosToday){
+const date = new Date();
+console.log(date);
+let uniqueDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+const counter = {
+  pomosToday,
+  uniqueDate
+}
+localStorage.setItem('pomoDailyCounter', JSON.stringify(counter));
+}
+function setTotalPomoCounter() {
+  const currTotal = Number(localStorage.getItem('totalPomoCounter'));
+  localStorage.setItem('totalPomoCounter', `${currTotal + 1}`);
+}
+function getTotalPomoCounter() {
+  return localStorage.getItem('totalPomoCounter');
+}
+function getDailyPomoCounter() {
+  const counter = JSON.parse(localStorage.getItem('pomoDailyCounter'));
+  if(counter != null) {
+    return counter.pomosToday;
+  } else {
+    return 0;
+  }
+// Здесь будет геттер, который будет парсить json объект, сравнивать инфу из него и выдавать какой-нибудь counter.value if counter.date === new Date().getDay блаблабла уникальный стамп сегодняшнего дня.
+
+}
 // FUNCTION countdown
 // -----------------------------------------------------
 function countdown() {
   if (remainingTime > 0) {
     remainingTime--;
-    updateDisplay();
+    updateTimerDisplay();
   } else {
     pauseCountdown();
     startBtn.innerHTML = "Start";
     isStarted = false;
     isBreak = !isBreak;
     if (isBreak) {
-      pomodoroCounter += 1;
-      if(pomodoroCounter % pomodorosTillLongBreak === 0) {
+      const pomoCounter = getDailyPomoCounter();
+      console.log(pomoCounter);
+      setPomoDailyCounter(Number(pomoCounter)+1);
+      setTotalPomoCounter();
+      if(pomoCounter % pomosTillLongBreak === 0) {
         remainingTime = longBreak * 60;
       } else {
         remainingTime = shortBreak * 60;
       }
     } else {
-      remainingTime = defaultPomodoroLength * 60;
+      remainingTime = defaultPomoLength * 60;
 
     }
-    // remainingTime = isBreak ? shortBreak * 60 : defaultPomodoroLength * 60;
-    updateDisplay();
+    // remainingTime = isBreak ? shortBreak * 60 : defaultPomoLength * 60;
+    updateTimerDisplay();
+    updatePomoCountersDisplay();
   }
 }
-function updateDisplay() {
+function updateTimerDisplay() {
   let minutes = Math.floor(remainingTime / 60);
   let seconds = remainingTime % 60;
   let displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
   let displaySeconds = seconds < 10 ? `0${seconds}` : seconds;
   timer.innerHTML = `${displayMinutes}:${displaySeconds}`;
+}
+function updatePomoCountersDisplay() {
+  dailyPomoCounterDisplay.innerHTML = getDailyPomoCounter();
+  totalPomoCounterDisplay.innerHTML = getTotalPomoCounter();
 }
 // FUNCTION timerBlink
 // -----------------------------------------------------
@@ -57,11 +97,11 @@ function timerBlink() {
     ? (timer.style.opacity = 0)
     : (timer.style.opacity = 1);
 }
-
+console.log()
 // FUNCTION startCountdown
 // -----------------------------------------------------
 function startCountdown() {
-  countdownInterval = setInterval(countdown, 1000);
+  countdownInterval = setInterval(countdown, 1);
 }
 // Object eventHandler
 
@@ -95,10 +135,10 @@ function resetCountdown() {
   pauseCountdown();
   clearBlickInterval();
   startBtn.innerHTML = "Start";
-  remainingTime = defaultPomodoroLength * 60;
+  remainingTime = defaultPomoLength * 60;
   isStarted = false;
   isBreak = false;
-  updateDisplay();
+  updateTimerDisplay();
 }
 
 // Event listener for startBtn

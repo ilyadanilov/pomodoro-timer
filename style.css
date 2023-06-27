@@ -4,7 +4,6 @@ html {
 html * {
   font-size: 16px;
   font-weight: 500;
-  line-height: 1.625;
   color: #444;
   font-family: Georgia, "Times New Roman", Times, serif;
 }
@@ -26,8 +25,6 @@ body {
   ); */
 }
 .pomodoro-heading {
-  position: absolute;
-  top: 2rem;
   color: #444;
   font-weight: 500;
   font-size: 2rem;
@@ -42,10 +39,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  row-gap: 2rem;
 }
 .pomodoro__timer {
+  display: inline;
   font-size: 4rem;
-  margin-bottom: 2rem;
   color: #444;
 }
 .pomodoro__btn-container {
@@ -89,3 +87,7 @@ body {
 .pomodoro__reset-btn:hover {
   opacity: 0.8;
 }
+.pomodoro-counter {
+
+}
+p {margin: 0;}
