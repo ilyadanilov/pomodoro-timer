@@ -18,13 +18,24 @@ let blinkInterval = null;
 let remainingTime = defaultPomoLength * 60;
 let isStarted = false;
 let isBreak = false;
+dailyResetOfPomoCounter();
 updatePomoCountersDisplay();
-
+// Retrieve timer state from sessionStorage if available
+const storedTimerState = sessionStorage.getItem('timerState');
+if (storedTimerState) {
+  const { remainingTime: storedRemainingTime, isStarted: storedIsStarted, isBreak: storedIsBreak } = JSON.parse(storedTimerState);
+  remainingTime = storedRemainingTime;
+  isStarted = storedIsStarted;
+  isBreak = storedIsBreak;
+  if (isStarted) {
+    startCountdown();
+  }
+}
 
 function setPomoDailyCounter(pomosToday){
 const date = new Date();
 console.log(date);
-let uniqueDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+const uniqueDate = new Date().toLocaleDateString();
 
 const counter = {
   pomosToday,
@@ -46,8 +57,18 @@ function getDailyPomoCounter() {
   } else {
     return 0;
   }
-// Здесь будет геттер, который будет парсить json объект, сравнивать инфу из него и выдавать какой-нибудь counter.value if counter.date === new Date().getDay блаблабла уникальный стамп сегодняшнего дня.
-
+  // Здесь будет геттер, который будет парсить json объект, сравнивать инфу из него и выдавать какой-нибудь counter.value if counter.date === new Date().getDay блаблабла уникальный стамп сегодняшнего дня.
+}
+function dailyResetOfPomoCounter() {
+const counter = JSON.parse(localStorage.getItem('pomoDailyCounter'));
+if (counter != null) {
+  const storedDate = counter.uniqueDate;
+  const currentDate = new Date().toLocaleDateString();
+  if (storedDate !== currentDate) {
+    // Reset the daily counter for a new day
+    setPomoDailyCounter(0);
+  }
+}
 }
 // FUNCTION countdown
 // -----------------------------------------------------
@@ -74,10 +95,16 @@ function countdown() {
       remainingTime = defaultPomoLength * 60;
 
     }
-    // remainingTime = isBreak ? shortBreak * 60 : defaultPomoLength * 60;
     updateTimerDisplay();
     updatePomoCountersDisplay();
+    dailyResetOfPomoCounter();
   }
+  const timerState = {
+    remainingTime,
+    isStarted,
+    isBreak
+  };
+  sessionStorage.setItem('timerState', JSON.stringify(timerState));
 }
 function updateTimerDisplay() {
   let minutes = Math.floor(remainingTime / 60);
@@ -138,6 +165,7 @@ function resetCountdown() {
   remainingTime = defaultPomoLength * 60;
   isStarted = false;
   isBreak = false;
+  sessionStorage.removeItem('timerState');
   updateTimerDisplay();
 }
 
