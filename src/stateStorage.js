@@ -1,4 +1,4 @@
-import {remainingTime, isBreak, isStarted} from './countdown';
+const {remainingTime, isBreak, isStarted} = require('./countdown');
 
 function setPomoDailyCounter(pomosToday) {
   const date = new Date();
@@ -60,4 +60,4 @@ function saveTimerState() {
 function removeTimerState() {
   sessionStorage.removeItem('timerState');
 }
-export {dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, incrementTotalPomoCounter, saveTimerState, removeTimerState}
+module.exports = {dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, incrementTotalPomoCounter, saveTimerState, removeTimerState}

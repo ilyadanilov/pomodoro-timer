@@ -7,4 +7,4 @@ const shortBreak = userDefinedShortBreak || 5;
 const longBreak = userDefinedLongBreak || 15;
 const pomosTillLongBreak = userDefinedPomosTillLongBreak || 4;
 
-export {defaultPomoLength, shortBreak,longBreak,pomosTillLongBreak};
+module.exports = {defaultPomoLength, shortBreak,longBreak,pomosTillLongBreak};

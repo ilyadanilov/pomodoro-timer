@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="style.css" rel="stylesheet" />
+    <title>Pomodoro timer</title>
+  </head>
+  <body>
+    <div class="pomodoro">
+      <h1 class="pomodoro-heading">Pomodoro timer</h1>
+      <div class="pomodoro__timer">25:00</div>
+      <div class="pomodoro__btn-container">
+        <button class="pomodoro__start-btn">Start</button>
+        <button class="pomodoro__reset-btn">Reset</button>
+      </div>
+      <p>Pomodoros finished today: <span class='daily-pomodoro-counter'>0</span></p>
+      <p>Total pomodoros finished: <span class='total-pomodoro-counter'>0</span></p>
+
+    </div>
+    <audio id="timer-end-sound" src="sounds/success.mp3"></audio>
+
+    <script src="dist/bundle.js"></script>
+  </body>
+</html>

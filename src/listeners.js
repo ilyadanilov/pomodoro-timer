@@ -1,5 +1,5 @@
-import { startBtn, resetBtn } from "./selectors";
-import { startOrPauseCountdown, handleResetBtnClick } from "./countdown";
+const { startBtn, resetBtn } = require("./selectors");
+const { startOrPauseCountdown, handleResetBtnClick } = require("./countdown");
 
 startBtn.addEventListener("click", startOrPauseCountdown);
 resetBtn.addEventListener("click", handleResetBtnClick);

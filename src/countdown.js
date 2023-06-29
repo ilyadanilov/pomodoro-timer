@@ -1,8 +1,29 @@
 // IMPORTS
+const {
+  defaultPomoLength,
+  pomosTillLongBreak,
+  shortBreak,
+  longBreak
+} = require('./constants');
 
-import { defaultPomoLength, pomosTillLongBreak, shortBreak, longBreak } from "./constants";
-import { dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, incrementTotalPomoCounter, saveTimerState, removeTimerState } from "./stateStorage";
-import { dailyPomoCounterDisplay, totalPomoCounterDisplay, startBtn, timer, notificationSound } from "./selectors";
+const {
+  dailyResetOfPomoCounter,
+  getDailyPomoCounter,
+  getTotalPomoCounter,
+  getStoredTimerState,
+  setPomoDailyCounter,
+  incrementTotalPomoCounter,
+  saveTimerState,
+  removeTimerState
+} = require('./stateStorage');
+
+const {
+  dailyPomoCounterDisplay,
+  totalPomoCounterDisplay,
+  startBtn,
+  timer,
+  notificationSound
+} = require('./selectors');
 
 // ЗАПРОС НА ЭКРАННЫЕ УВЕДОМЛЕНИЯ
 
@@ -53,7 +74,7 @@ function countdown() {
 }
 // Functions after Refactoring code
 function updateRemainingTime() {
-  remainingTime--;
+  return --remainingTime;
 }
 function playNotificationSound() {
   notificationSound.play();
@@ -163,5 +184,7 @@ function showNotification() {
 
 }
 }
-
-export {updateRemainingTime, startOrPauseCountdown, handleResetBtnClick, remainingTime, isBreak, isStarted};
+function getRemainingTime() {
+  return remainingTime;
+}
+module.exports = {updateRemainingTime, startOrPauseCountdown, handleResetBtnClick,getRemainingTime,remainingTime, isBreak, isStarted};
