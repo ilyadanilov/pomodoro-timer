@@ -11,7 +11,7 @@ function setPomoDailyCounter(pomosToday) {
   localStorage.setItem('pomoDailyCounter', JSON.stringify(counter));
 }
 
-function setTotalPomoCounter() {
+function incrementTotalPomoCounter() {
   const currTotal = Number(localStorage.getItem('totalPomoCounter'));
   localStorage.setItem('totalPomoCounter', `${currTotal + 1}`);
 }
@@ -60,4 +60,4 @@ function saveTimerState() {
 function removeTimerState() {
   sessionStorage.removeItem('timerState');
 }
-export {dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, setTotalPomoCounter, saveTimerState, removeTimerState}
+export {dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, incrementTotalPomoCounter, saveTimerState, removeTimerState}

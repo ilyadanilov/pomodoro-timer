@@ -1,19 +1,29 @@
+// IMPORTS
+
 import { defaultPomoLength, pomosTillLongBreak, shortBreak, longBreak } from "./constants";
-import { dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, setTotalPomoCounter, saveTimerState, removeTimerState } from "./stateStorage";
+import { dailyResetOfPomoCounter, getDailyPomoCounter, getTotalPomoCounter, getStoredTimerState, setPomoDailyCounter, incrementTotalPomoCounter, saveTimerState, removeTimerState } from "./stateStorage";
 import { dailyPomoCounterDisplay, totalPomoCounterDisplay, startBtn, timer, notificationSound } from "./selectors";
-// Запрос на экранные уведомления
+
+// ЗАПРОС НА ЭКРАННЫЕ УВЕДОМЛЕНИЯ
+
 if ("Notification" in window) {
   // Request permission to show notifications
   Notification.requestPermission();
 }
+
+// ПЕРЕМЕННЫЕ
 
 let countdownInterval = null;
 let blinkInterval = null;
 let remainingTime = defaultPomoLength * 60;
 let isStarted = false;
 let isBreak = false;
+
+// ПРОВЕРКА И ОБНУЛЕНИЕ ПОМИДОРОВ НА СЕГОДНЯ
 dailyResetOfPomoCounter();
 updatePomoCountersDisplay();
+
+// ПРОВЕРКА, ЕСТЬ ЛИ СОХРАНЁННОЕ СОСТОЯНИЕ ТАЙМЕРА ПОСЛЕ ПЕРЕЗАГРУЗКИ СТРАНИЦЫ
 
 const storedTimerState = getStoredTimerState();
 // Retrieve timer state from sessionStorage if available
@@ -34,33 +44,37 @@ if (storedTimerState !== null) {
 
 function countdown() {
   if (remainingTime > 0) {
-    remainingTime--;
+    updateRemainingTime();
     updateTimerDisplay();
   } else {
-    notificationSound.play();
-
-    pauseCountdown();
-    startBtn.innerHTML = "Start";
-    isStarted = false;
-    isBreak = !isBreak;
-    if (isBreak) {
-      const pomoCounter = getDailyPomoCounter();
-      setPomoDailyCounter(Number(pomoCounter)+1);
-      setTotalPomoCounter();
-      if(pomoCounter % pomosTillLongBreak === 0) {
-        remainingTime = longBreak * 60;
-      } else {
-        remainingTime = shortBreak * 60;
-      }
-    } else {
-      remainingTime = defaultPomoLength * 60;
-
-    }
-    updateTimerDisplay();
-    updatePomoCountersDisplay();
-    dailyResetOfPomoCounter();
+    handleTimerEnd();
   }
   saveTimerState();
+}
+// Functions after Refactoring code
+function updateRemainingTime() {
+  remainingTime--;
+}
+function playNotificationSound() {
+  notificationSound.play();
+}
+function handleTimerEnd() {
+  pauseCountdown();
+  playNotificationSound();
+  showNotification();
+  resetTimer();
+  updateTimerDisplay();
+  updatePomoCounters();
+  dailyResetOfPomoCounter();
+}
+function updatePomoCounters() {
+  incrementPomoCounter();
+  incrementTotalPomoCounter();
+  updatePomoCountersDisplay();
+}
+function incrementPomoCounter() {
+  const pomoCounter = getDailyPomoCounter();
+  setPomoDailyCounter(Number(pomoCounter) + 1);
 }
 function updateTimerDisplay() {
   let minutes = Math.floor(remainingTime / 60);
@@ -115,16 +129,39 @@ function pauseCountdown() {
     clearInterval(countdownInterval);
   }
 }
-
-function resetCountdown() {
-  pauseCountdown();
-  clearBlickInterval();
+function resetTimer(pomodoro = false) {
   startBtn.innerHTML = "Start";
-  remainingTime = defaultPomoLength * 60;
   isStarted = false;
-  isBreak = false;
+  if (pomodoro) {
+    remainingTime = defaultPomoLength * 60;
+    isBreak = false;
+  } else {
+    isBreak = !isBreak;
+    if(getDailyPomoCounter() % pomosTillLongBreak === 0) {
+      remainingTime = longBreak * 60;
+    } else {
+      remainingTime = shortBreak * 60;
+    }
+  }
   sessionStorage.removeItem('timerState');
   updateTimerDisplay();
+};
+function handleResetBtnClick() {
+  pauseCountdown();
+  clearBlickInterval();
+  resetTimer(true);
 }
 
-export {startOrPauseCountdown, resetCountdown, remainingTime, isBreak, isStarted};
+function showNotification() {
+  if (Notification.permission === "granted") {
+    const options = {
+      body: "Timer has ended!",
+      icon: "path/to/notification-icon.png", // Replace with your notification icon
+    };
+
+    const notification = new Notification("Pomodoro Timer", options);
+
+}
+}
+
+export {updateRemainingTime, startOrPauseCountdown, handleResetBtnClick, remainingTime, isBreak, isStarted};
